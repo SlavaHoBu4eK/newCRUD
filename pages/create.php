@@ -13,7 +13,12 @@ $birthday = $_POST['birthday'];
 $phone = $_POST['phone'];
 
 
-mysqli_query($connect, "INSERT INTO `client` (`id`, `last_name`,`name`,`middle_name`,`date_of_birth`,`phone_number`) VALUES (NULL,'$lastname','$name', '$middlename','$birthday','$phone')"); ?>
+$sql = ("INSERT INTO client ( last_name, name, middle_name, date_of_birth, phone_number) VALUES (?,?,?,?,?)");
+$query = $pdo->prepare($sql);
+$query->execute([$lastname, $name, $middlename, $birthday, $phone]);
+
+
+?>
 Запись для аккаунта <?= $lastname . ' ' . $name . ' ' . $middlename ?> успешно создана. Для того, чтоб вернуться на
 главную страницу, нажмите <a href="/index.php">вперед</a>
 <?php require_once '../blocks/footer.php'; ?>

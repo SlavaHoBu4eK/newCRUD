@@ -2,18 +2,28 @@
 <h3>Добавление нового клиента</h3>
 <form action="pages/create.php" method="post">
     <label>Фамилия:</label>
-    <input type="text" name="lastname" placeholder="Введите фамилию">
+    <label>
+        <input type="text" name="lastname" placeholder="Введите фамилию">
+    </label>
     <label>Имя:</label>
-    <input type="text" name="name" placeholder="Введите имя">
+    <label>
+        <input type="text" name="name" placeholder="Введите имя">
+    </label>
     <label>Отчество:</label>
-    <input type="text" name="middlename" placeholder="Введите отчество">
+    <label>
+        <input type="text" name="middlename" placeholder="Введите отчество">
+    </label>
     <label>Дата рождения:</label>
-    <input type="date" name="birthday" placeholder="Введите дату рождения">
+    <label>
+        <input type="date" name="birthday" placeholder="Введите дату рождения">
+    </label>
     <label>Номер телефона:</label>
-    <input type="text" name="phone" placeholder="Введите номер телефона">
+    <label>
+        <input type="text" name="phone" placeholder="Введите номер телефона">
+    </label>
     <button type="submit">Добавить нового клиента</button>
 </form>
-
+<?php $sn = 1; ?>
 <br><br>
 <table>
     <tr>
@@ -29,22 +39,23 @@
     </tr>
 
     <?php
-    $clients = mysqli_query($connect, "SELECT*FROM `client`");
-    $clients = mysqli_fetch_all($clients);
+    $sql = $pdo->prepare("SELECT * FROM client WHERE deleted_at IS NULL");
+    $sql->execute();
+    $clients = $sql->fetchAll(PDO::FETCH_OBJ);
     foreach ($clients as $client) {
         ?>
 
 
         <tr>
-            <td><?= $client[0] ?></td>
-            <td><?= $client[1] ?></td>
-            <td><?= $client[2] ?></td>
-            <td><?= $client[3] ?></td>
-            <td><?= $client[4] ?></td>
-            <td><?= $client[6] ?></td>
-            <td><a href="pages/update.php?id=<?= $client[0] ?>">Редактировать</a></td>
-            <td><a href="pages/delete.php?id=<?= $client[0] ?>">Удалить</a></td>
-            <td><a href="pages/view.php?id=<?= $client[0] ?>">Просмотреть</a></td>
+            <td><?= $sn++ ?>.</td>
+            <td><?php echo $client->last_name; ?></td>
+            <td><?php echo $client->name ?></td>
+            <td><?php echo $client->middle_name ?></td>
+            <td><?php echo $client->date_of_birth ?></td>
+            <td><?php echo $client->phone_number ?></td>
+            <td><a href="pages/update.php?id=<?php echo $client->id ?>">Редактировать</a></td>
+            <td><a href="pages/delete.php?id=<?php echo $client->id ?>">Удалить</a></td>
+            <td><a href="pages/view.php?id=<?php echo $client->id ?>">Просмотреть</a></td>
         </tr>
 
         <?php
@@ -54,4 +65,3 @@
 </body>
 <?php require_once 'blocks/footer.php'; ?>
 
-</html>
