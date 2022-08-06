@@ -7,7 +7,6 @@ create table if not exists client
     last_name     varchar(255),
     middle_name   varchar(255),
     date_of_birth date,
-    gender        bool,
     phone_number  varchar(40),
     deleted_at int(10),
     primary key (id)

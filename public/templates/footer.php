@@ -7,5 +7,4 @@
         </a>
         <span class="text-muted">© 2022 Slava&Company, Inc</span>
     </div>
-
 </footer>
