@@ -1,78 +1,58 @@
 <?php
+
+require_once "../common.php";
+include '../templates/header.php';
+
+$id = $_GET['id'] ?? '';
+
 try {
-    require "../config.php";
-    require "../common.php";
-    if (isset($_GET['id'])) {
-
-        $client_id = ($_GET['id']);
-        $connection = new PDO($dsn, $username, $password, $options);
-
-        $sql = "SELECT * FROM client WHERE id = :client_id AND deleted_at IS NULL";
-        $statement = $connection->prepare($sql);
-        $statement->bindValue(':client_id', $client_id);
-        $statement->execute();
-        $client = $statement->fetchObject();
+    if (!empty($id)) {
+        $sql = $connection->prepare("SELECT * FROM client WHERE id = :client_id AND deleted_at IS NULL");
+        $sql->execute(['client_id' => $id]);
+        $client = $sql->fetchObject();
     }
 } catch (PDOException $error) {
-    echo $sql . "<br>" . $error->getMessage();
+    echo "Oops... something went wrong! Please try later. Details: {$error->getMessage()}";
 }
 
-if (!empty($client)){
-?>
-<?php require_once 'templates/header.php'; ?>
+if(!empty($_GET) && empty($client)){
+    ?> Пользователя с данным id не существует. Для того, чтоб вернуться на главную страницу, нажмите <a
+            href="index.php">вперед</a> <?php
+}
 
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-    <link rel="icon" href="/img/favicon_gym.png">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/public/css/main.css">
-    <title></title>
-</head>
-<body>
-<?php
-
-if (isset($_POST['id']) && $statement) {
-    if (!hash_equals($_SESSION['csrf'], $_POST['csrf'])) die();
-    try {
-        $connection = new PDO($dsn, $username, $password, $options);
-
-        $id = $_POST['id'];
-        $lastname = $_POST['lastname'];
-        $name = $_POST['name'];
-        $middlename = $_POST['middlename'];
-        $birthday = $_POST['birthday'];
-        $phone = $_POST['phone'];
-
-        $sql = "UPDATE client SET
-                    last_name ='$lastname',
-                    name = '$name',
-                    middle_name = '$middlename',
-                    date_of_birth ='$birthday',
-                    phone_number = '$phone'
-                WHERE id = '$id'";
-        $statement = $connection->prepare($sql);
-        $statement->execute();
-        $client = $statement->fetch(PDO::FETCH_ASSOC);
-
-
-    } catch (PDOException $error) {
-        echo $sql . "<br>" . $error->getMessage();
-    }
-    ?>
-
-
-    Изменения для аккаунта <?= $lastname . ' ' . $name . ' ' . $middlename ?> успешно сохранены. Для того, чтоб вернуться на главную страницу, нажмите
-    <a href="index.php">вперед</a>
+if (!empty($_POST)) { ?>
 
     <?php
-} else {
+    try {
+        $statement = $connection->prepare("UPDATE client SET 
+                  last_name = ?, 
+                  name = ?, 
+                  middle_name = ?, 
+                  date_of_birth = ?, 
+                  phone_number = ? 
+              WHERE id = ?");
+
+        $statement->execute([
+            $_POST['lastname'] ?? '',
+            $_POST['name'] ?? '',
+            $_POST['middlename'] ?? '',
+            $_POST['birthday'] ?? '',
+            $_POST['phone'] ?? '',
+             $_POST['id'] ?? ''
+        ]);
+
+        $client = $statement->fetch(PDO::FETCH_ASSOC);
+        ?>
+        Изменения  успешно сохранены. Для того, чтоб вернуться на главную страницу, нажмите <a
+                href="index.php">вперед</a>
+        <?php
+    } catch (PDOException $error) {
+        echo "Oops... something went wrong! Please try later. Details: {$error->getMessage()}";
+    }
+} elseif ($client !== false) {
     ?>
     <h3>Изменение данных клиента</h3>
     <form action="" method="post">
-        <input name="csrf" type="hidden" value="<?php echo escape($_SESSION['csrf']); ?>">
         <input type="hidden" name="id" value="<?= escape($client->id) ?>">
         <p>Фамилия:</p>
         <label>
@@ -97,15 +77,8 @@ if (isset($_POST['id']) && $statement) {
         <button type="submit">Изменить</button>
         <br><br>
     </form>
-<?php } ?>
-</body>
-<?php }
-else { ?>
-    Пользователя с данным id не существует. Для того, чтоб вернуться на главную страницу, нажмите
-    <a href="index.php">вперед</a>
 
     <?php
 }
-?>
-<?php require_once 'templates/footer.php'; ?>
+require_once '../templates/footer.php';
 

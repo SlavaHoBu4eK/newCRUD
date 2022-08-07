@@ -1,19 +1,19 @@
 <?php
-require "../config.php";
-require "../common.php";
-if (isset($_POST['id'])) {
-    try {
-        $connection = new PDO($dsn, $username, $password, $options);
+require_once "../common.php";
 
-        $id = $_POST['id'];
-        $body = $_POST['body'];
+$id = $_POST['id'] ?? "";
+$body = $_POST['body'] ?? "";
 
-        $sql = "INSERT INTO comments ( client_id, body) VALUES (?,?)";
-
-        $statement = $connection->prepare($sql);
-        $statement->execute([$id, $body]);
-    } catch (PDOException $error) {
-        echo $sql . "<br>" . $error->getMessage();
-    }
+if (empty($id) || empty($body)) {
+    die("Request data is required!");
 }
+
+try {
+    $connection
+        ->prepare("INSERT INTO comments ( client_id, body) VALUES (?,?)")
+        ->execute([$id, $body]);
+} catch (PDOException $error) {
+    die("Oops... something went wrong! Please try later. Details: {$error->getMessage()}");
+}
+
 header('Location: view.php?id=' . $id);

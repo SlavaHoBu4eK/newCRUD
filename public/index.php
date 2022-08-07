@@ -1,17 +1,9 @@
-<?php //require '../system/Routing.php';
-//$url = key($_GET);
-//$r = new Router();
-//$r->addRoute("/view","view.php");
-//$r->addRoute("/create","create.php");
-//$r->addRoute("/delete","delete.php");
-//$r->addRoute("/update","update.php");
-//$r->addRoute("/update_comment","update_comment.php");
-//
-//$r->route("/".$url);
-//?>
+<?php
 
+require_once "../common.php";
+include '../templates/header.php';
 
-<?php include 'templates/header.php'; ?>
+?>
     <h3>Добавление нового клиента</h3>
     <form action="create.php" method="post">
         <label>Фамилия:</label>
@@ -52,32 +44,30 @@
         </tr>
 
         <?php
-        require "../config.php";
-        require "../common.php";
-        $clients=[];
+
+        $clients = [];
         try {
-            $connection = new PDO($dsn, $username, $password, $options);
+
             $sql = $connection->prepare("SELECT * FROM client WHERE deleted_at IS NULL");
             $sql->execute();
             $clients = $sql->fetchAll(PDO::FETCH_OBJ);
         } catch (PDOException $error) {
-            echo  "<br>" . $error->getMessage();
+            echo "<br> {$error->getMessage()}";
         }
 
         foreach ($clients as $client) {
             ?>
 
-
             <tr>
                 <td><?= $sn++ ?>.</td>
-                <td><?php echo $client->last_name; ?></td>
-                <td><?php echo $client->name ?></td>
-                <td><?php echo $client->middle_name ?></td>
-                <td><?php echo $client->date_of_birth ?></td>
-                <td><?php echo $client->phone_number ?></td>
-                <td><a href="update.php?id=<?php echo $client->id ?>">Редактировать</a></td>
-                <td><a href="delete.php?id=<?php echo $client->id ?>">Удалить</a></td>
-                <td><a href="view.php?id=<?php echo $client->id ?>">Просмотреть</a></td>
+                <td><?= $client->last_name; ?></td>
+                <td><?= $client->name ?></td>
+                <td><?= $client->middle_name ?></td>
+                <td><?= $client->date_of_birth ?></td>
+                <td><?= $client->phone_number ?></td>
+                <td><a href="update.php?id=<?= $client->id ?>">Редактировать</a></td>
+                <td><a href="delete.php?id=<?= $client->id ?>">Удалить</a></td>
+                <td><a href="view.php?id=<?= $client->id ?>">Просмотреть</a></td>
             </tr>
 
             <?php
@@ -85,5 +75,4 @@
         ?>
     </table>
 
-
-<?php include 'templates/footer.php'; ?>
+<?php include '../templates/footer.php'; ?>

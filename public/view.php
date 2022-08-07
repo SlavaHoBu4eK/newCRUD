@@ -1,37 +1,30 @@
 <?php
 
+require_once "../common.php";
+include '../templates/header.php';
 
-if (isset($_GET['id'])) {
+$id = $_GET['id'] ?? '';
 
-
-    require "../config.php";
-    require "../common.php";
-
+if (!empty($id)) {
 
     try {
-        $connection = new PDO($dsn, $username, $password, $options);
-
-        $client_id = ($_GET['id']);
-        $sql = $pdo->prepare("SELECT * FROM client WHERE id = :client_id AND deleted_at IS NULL");
-        $sql->execute(['client_id' => $client_id]);
+        $sql = $connection->prepare("SELECT * FROM client WHERE id = :client_id AND deleted_at IS NULL");
+        $sql->execute(['client_id' => $id]);
         $client = $sql->fetch(PDO::FETCH_OBJ);
     } catch (PDOException $error) {
-        echo $sql . "<br>" . $error->getMessage();
+        die("Oops... something went wrong! Please try later. Details: {$error->getMessage()}");
     }
-
 }
 
-require 'templates/header.php';
+$comments = [];
+
 if (!empty($client)){
+
 try {
-    $connection = new PDO($dsn, $username, $password, $options);
-
-    $sql = $pdo->prepare("SELECT * FROM comments WHERE client_id = :client_id  AND deleted_at IS NULL");
-    $sql->execute(['client_id' => $client_id]);
+    $sql = $connection->prepare("SELECT * FROM comments WHERE client_id = :client_id  AND deleted_at IS NULL");
+    $sql->execute(['client_id' => $id]);
     $comments = $sql->fetchall(PDO::FETCH_OBJ);
-
 } catch (PDOException $error) {
-    echo $sql . "<br>" . $error->getMessage();
 }
 ?>
 
@@ -43,7 +36,6 @@ try {
 <h3>Номер телефона: <?php echo $client->phone_number ?></h3>
 <hr>
 <form action="create_comment.php" method="post">
-    <input name="csrf" type="hidden" value="<?php echo escape($_SESSION['csrf']); ?>">
     <input type="hidden" name="id" value=" <?php echo $client->id ?>">
     <textarea name="body"></textarea><br><br>
     <button type="submit">Добавить комментарий</button>
@@ -52,7 +44,7 @@ try {
 <h3>Комментарий:</h3>
 <ul>
     <?php
-    if ($comments && $sql->rowCount() > 0) {
+    if (count($comments) > 0) {
         foreach ($comments as $comment) {
             ?>
             <li><?php echo $comment->body ?></li>
@@ -68,8 +60,8 @@ try {
         <a href="index.php">вперед</a>
         <?php
     }
-
     ?>
 </ul>
 </body>
-<?php require_once 'templates/footer.php'; ?>
+
+<?php require_once '../templates/footer.php'; ?>

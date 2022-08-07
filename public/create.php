@@ -1,35 +1,36 @@
 <?php
-require "../config.php";
-require "../common.php";
+
+require_once "../common.php";
+
+include '../templates/header.php';
 
 if (isset($_POST['submit'])) {
-$sql="";
+
+    $isSaved = false;
+
     try {
-        $connection = new PDO($dsn, $username, $password, $options);
-
-        $lastname = $_POST['lastname'];
-        $name = $_POST['name'];
-        $middlename = $_POST['middlename'];
-        $birthday = $_POST['birthday'];
-        $phone = $_POST['phone'];
-
-
-        $sql = "INSERT INTO client ( last_name, name, middle_name, date_of_birth, phone_number) VALUES (?,?,?,?,?)";
-        $statement = $connection->prepare($sql);
-        $statement->execute([$lastname, $name, $middlename, $birthday, $phone]);
+        $isSaved = $connection
+            ->prepare("INSERT INTO client ( last_name, name, middle_name, date_of_birth, phone_number) VALUES (?,?,?,?,?)")
+            ->execute([
+                    $_POST['lastname'] ?? "",
+                    $_POST['name'] ?? "",
+                    $_POST['middlename'] ?? "",
+                    $_POST['birthday'] ?? "",
+                    $_POST['phone'] ?? ""
+            ]);
     } catch (PDOException $error) {
-        echo $sql . "<br>" . $error->getMessage();
+        echo $error->getMessage();
     }
+
+    if ($isSaved) { ?>
+        <blockquote> Запись для аккаунта успешно создана. Для того, чтоб вернуться
+            на главную страницу, нажмите <a href="index.php">вперед</a>.
+        </blockquote>
+    <?php } else {
+        echo "Something went wrong! Please try later.";
+    }
+} else {
+    echo "Request data is required!";
 }
-include 'templates/header.php'; ?>
 
-<?php if (isset($_POST['submit']) && $statement) : ?>
-    <blockquote> Запись для аккаунта <?= $lastname . ' ' . $name . ' ' . $middlename ?> успешно создана. Для того, чтоб
-        вернуться на
-        главную страницу, нажмите <a href="index.php">вперед</a>.
-    </blockquote>
-<?php endif; ?>
-
-
-
-<?php include 'templates/footer.php'; ?>
+include '../templates/footer.php';

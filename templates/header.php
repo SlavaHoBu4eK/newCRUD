@@ -6,8 +6,8 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/public/css/main.css">
-    <link rel="icon" href="/img/favicon_gym.png">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="icon" href="assets/img/favicon_gym.png">
     <title>информация о клиенте</title>
 </head>
 
@@ -22,7 +22,7 @@
             </a>
 
             <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="../index.php" class="nav-link px-2 text-secondary">GYM</a></li>
+                <li><a href="index.php" class="nav-link px-2 text-secondary">GYM</a></li>
 
             </ul>
 

@@ -1,30 +1,28 @@
 <?php
-require "../config.php";
-require "../common.php";
+require_once "../common.php";
+include '../templates/header.php';
 
-if (isset($_GET["id"])) {
-       try {
-        $connection = new PDO($dsn, $username, $password, $options);
+$id = $_GET['id'];
 
-        $id = $_GET['id'];
-//$sql = ("DELETE FROM client WHERE id = :id");
-        $sql = "UPDATE  client SET deleted_at = :deleted_at WHERE  id = :id ";
+if (!empty($id)) {
 
-        $statement = $connection->prepare($sql);
-        $statement->bindValue('id', $id);
-        $statement->bindValue('deleted_at', time());
-        $statement->execute();
-//$statement->execute(['id' => $id, 'deleted_at' => time()]);
+    try {
+        $connection
+            ->prepare("UPDATE  client SET deleted_at = :deleted_at WHERE  id = :id ")
+            ->execute([
+                'id' => $id,
+                'deleted_at' => time()
+            ]);
+        ?>
+        <blockquote> Запись была успешно удалена. Для того, чтоб вернуться
+            на главную страницу, нажмите <a href="index.php">вперед</a>.
+        </blockquote>
+    <?php
     } catch (PDOException $error) {
-        echo $sql . "<br>" . $error->getMessage();
+        echo "Oops... something went wrong! Please try later. Details: {$error->getMessage()}";
     }
+} else {
+    echo "Request data is required!";
 }
-if (isset($statement)) {
-    ?>
 
-    <?php require 'templates/header.php'; ?>
-    Запись была успешно удалена. Для того, чтоб вернуться на главную страницу, нажмите <a
-            href="index.php">вперед</a>
-    <?php require_once 'templates/footer.php';
-}
-?>
+include '../templates/footer.php';
