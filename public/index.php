@@ -1,7 +1,8 @@
 <?php
-
+include '../src/entity/client.php';
 require_once "../common.php";
 include '../templates/header.php';
+
 
 ?>
     <h3>Добавление нового клиента</h3>
@@ -28,7 +29,7 @@ include '../templates/header.php';
         </label>
         <button type="submit" name="submit">Добавить нового клиента</button>
     </form>
-<?php $sn = 1; ?>
+
     <br><br>
     <table>
         <tr>
@@ -45,7 +46,9 @@ include '../templates/header.php';
 
         <?php
 
-        $clients = [];
+
+       //$clients = [];
+       $sn = 1;
         try {
 
             $sql = $connection->prepare("SELECT * FROM client WHERE deleted_at IS NULL");
@@ -55,19 +58,23 @@ include '../templates/header.php';
             echo "<br> {$error->getMessage()}";
         }
 
+
         foreach ($clients as $client) {
+            $all_client = new Client($client->id,$client->last_name,$client->name,$client->middle_name,$client->date_of_birth,$client->phone_number);
+
+
             ?>
 
             <tr>
                 <td><?= $sn++ ?>.</td>
-                <td><?= $client->last_name; ?></td>
-                <td><?= $client->name ?></td>
-                <td><?= $client->middle_name ?></td>
-                <td><?= $client->date_of_birth ?></td>
-                <td><?= $client->phone_number ?></td>
-                <td><a href="update.php?id=<?= $client->id ?>">Редактировать</a></td>
-                <td><a href="delete.php?id=<?= $client->id ?>">Удалить</a></td>
-                <td><a href="view.php?id=<?= $client->id ?>">Просмотреть</a></td>
+                <td><?= $all_client->getLastName()   ?></td>
+                <td><?= $all_client->getName()  ?></td>
+                <td><?= $all_client->getMiddleName() ?></td>
+                <td><?= $all_client->getBirthday() ?></td>
+                <td><?= $all_client->getPhone() ?></td>
+                <td><a href="update.php?id=<?= $all_client->getId() ?>">Редактировать</a></td>
+                <td><a href="delete.php?id=<?= $all_client->getId() ?>">Удалить</a></td>
+                <td><a href="view.php?id=<?= $all_client->getId()?>">Просмотреть</a></td>
             </tr>
 
             <?php

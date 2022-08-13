@@ -2,6 +2,7 @@
 
 require_once "../common.php";
 include '../templates/header.php';
+include '../src/entity/client.php';
 
 $id = $_GET['id'] ?? '';
 
@@ -15,7 +16,7 @@ try {
     echo "Oops... something went wrong! Please try later. Details: {$error->getMessage()}";
 }
 
-if(!empty($_GET) && empty($client)){
+if (!empty($_GET) && empty($client)) {
     ?> Пользователя с данным id не существует. Для того, чтоб вернуться на главную страницу, нажмите <a
             href="index.php">вперед</a> <?php
 }
@@ -33,12 +34,12 @@ if (!empty($_POST)) { ?>
               WHERE id = ?");
 
         $statement->execute([
-            $_POST['lastname'] ?? '',
-            $_POST['name'] ?? '',
-            $_POST['middlename'] ?? '',
-            $_POST['birthday'] ?? '',
-            $_POST['phone'] ?? '',
-             $_POST['id'] ?? ''
+                $_POST['lastname'] ?? '',
+                $_POST['name'] ?? '',
+                $_POST['middlename'] ?? '',
+                $_POST['birthday'] ?? '',
+                $_POST['phone'] ?? '',
+                $_POST['id'] ?? ''
         ]);
 
         $client = $statement->fetch(PDO::FETCH_ASSOC);
@@ -50,29 +51,30 @@ if (!empty($_POST)) { ?>
         echo "Oops... something went wrong! Please try later. Details: {$error->getMessage()}";
     }
 } elseif ($client !== false) {
+    $client = new Client($client->id, $client->last_name, $client->name, $client->middle_name, $client->date_of_birth, $client->phone_number);
     ?>
     <h3>Изменение данных клиента</h3>
     <form action="" method="post">
-        <input type="hidden" name="id" value="<?= escape($client->id) ?>">
+        <input type="hidden" name="id" value="<?= escape($client->getId()) ?>">
         <p>Фамилия:</p>
         <label>
-            <input type="text" name="lastname" value="<?= escape($client->last_name) ?>">
+            <input type="text" name="lastname" value="<?= escape($client->getLastName()) ?>">
         </label>
         <p>Имя:</p>
         <label>
-            <input type="text" name="name" value="<?= escape($client->name) ?>">
+            <input type="text" name="name" value="<?= escape($client->getName()) ?>">
         </label>
         <p>Отчество:</p>
         <label>
-            <input type="text" name="middlename" value="<?= escape($client->middle_name) ?>">
+            <input type="text" name="middlename" value="<?= escape($client->getMiddleName()) ?>">
         </label>
         <p>Дата рождения:</p>
         <label>
-            <input type="date" name="birthday" value="<?= escape($client->date_of_birth) ?>">
+            <input type="date" name="birthday" value="<?= escape($client->getBirthday()) ?>">
         </label>
         <p>Номер телефона:</p>
         <label>
-            <input type="text" name="phone" value="<?= escape($client->phone_number) ?>">
+            <input type="text" name="phone" value="<?= escape($client->getPhone()) ?>">
         </label>
         <button type="submit">Изменить</button>
         <br><br>

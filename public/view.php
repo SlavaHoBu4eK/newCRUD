@@ -2,6 +2,8 @@
 
 require_once "../common.php";
 include '../templates/header.php';
+include '../src/entity/comment.php';
+include '../src/entity/client.php';
 
 $id = $_GET['id'] ?? '';
 
@@ -14,9 +16,9 @@ if (!empty($id)) {
     } catch (PDOException $error) {
         die("Oops... something went wrong! Please try later. Details: {$error->getMessage()}");
     }
+    $client = new Client($id, $client->last_name, $client->name, $client->middle_name, $client->date_of_birth, $client->phone_number);
 }
 
-$comments = [];
 
 if (!empty($client)){
 
@@ -25,19 +27,22 @@ try {
     $sql->execute(['client_id' => $id]);
     $comments = $sql->fetchall(PDO::FETCH_OBJ);
 } catch (PDOException $error) {
+    echo $error->getMessage();
 }
 ?>
 
 <body>
-<h3>Фамилия: <?php echo $client->last_name; ?></h3>
-<h3>Имя: <?php echo $client->name ?></h3>
-<h3>Отчество: <?php echo $client->middle_name ?></h3>
-<h3>Дата рождения: <?php echo $client->date_of_birth ?></h3>
-<h3>Номер телефона: <?php echo $client->phone_number ?></h3>
+<h3>Фамилия: <?= $client->getLastName(); ?></h3>
+<h3>Имя: <?= $client->getName() ?></h3>
+<h3>Отчество: <?= $client->getMiddleName() ?></h3>
+<h3>Дата рождения: <?= $client->getBirthday() ?></h3>
+<h3>Номер телефона: <?= $client->getPhone() ?></h3>
 <hr>
 <form action="create_comment.php" method="post">
-    <input type="hidden" name="id" value=" <?php echo $client->id ?>">
-    <textarea name="body"></textarea><br><br>
+    <input type="hidden" name="id" value=" <?php echo $client->getId() ?>">
+    <label>
+        <textarea name="body"></textarea>
+    </label><br><br>
     <button type="submit">Добавить комментарий</button>
 </form>
 <hr>
@@ -46,8 +51,9 @@ try {
     <?php
     if (count($comments) > 0) {
         foreach ($comments as $comment) {
+            $comment = new Comment($comment->id, $comment->body);
             ?>
-            <li><?php echo $comment->body ?></li>
+            <li><?= $comment->getBody() ?></li>
             <?php
         }
     } else {
