@@ -2,32 +2,42 @@
 
 class Comment
 {
-    private $id;
-    private $body;
+    private int $id;
+    private ?int $client_id;
+    private ?string $body;
 
-    public function __construct($id = 0, $body = "")
+
+    public function __construct(
+        ?string $body = null,
+        ?int $client_id  = null
+    )
     {
-        $this->id = $id;
         $this->body = $body;
+        $this->client_id = $client_id;
     }
 
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function setBody($body)
+    public function setBody(string $body): void
     {
-       $this->body = $body;
+        $this->body = $body;
     }
 
-    public function getBody()
+    public function getBody(): string
     {
         return $this->body;
+    }
+
+    public function setClientId(int $clientId): void
+    {
+        $this->client_id = $clientId;
+    }
+
+    public function getClientId(): int
+    {
+        return $this->client_id;
     }
 }

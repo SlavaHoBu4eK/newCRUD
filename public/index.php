@@ -1,4 +1,7 @@
 <?php
+/**
+ * @var $clientRepository СlientRepository
+ */
 include '../src/entity/client.php';
 require_once "../common.php";
 include '../templates/header.php';
@@ -9,7 +12,7 @@ include '../templates/header.php';
     <form action="create.php" method="post">
         <label>Фамилия:</label>
         <label>
-            <input type="text" name="lastname" placeholder="Введите фамилию">
+            <input type="text" name="last_name" placeholder="Введите фамилию">
         </label>
         <label>Имя:</label>
         <label>
@@ -17,7 +20,7 @@ include '../templates/header.php';
         </label>
         <label>Отчество:</label>
         <label>
-            <input type="text" name="middlename" placeholder="Введите отчество">
+            <input type="text" name="middle_name" placeholder="Введите отчество">
         </label>
         <label>Дата рождения:</label>
         <label>
@@ -45,41 +48,21 @@ include '../templates/header.php';
         </tr>
 
         <?php
-
-
-       //$clients = [];
-       $sn = 1;
-        try {
-
-            $sql = $connection->prepare("SELECT * FROM client WHERE deleted_at IS NULL");
-            $sql->execute();
-            $clients = $sql->fetchAll(PDO::FETCH_OBJ);
-        } catch (PDOException $error) {
-            echo "<br> {$error->getMessage()}";
-        }
-
-
-        foreach ($clients as $client) {
-            $all_client = new Client($client->id,$client->last_name,$client->name,$client->middle_name,$client->date_of_birth,$client->phone_number);
-
-
-            ?>
-
+        $sn = 1;
+        $clients = $clientRepository->findAll();
+        foreach ($clients as $client) { ?>
             <tr>
                 <td><?= $sn++ ?>.</td>
-                <td><?= $all_client->getLastName()   ?></td>
-                <td><?= $all_client->getName()  ?></td>
-                <td><?= $all_client->getMiddleName() ?></td>
-                <td><?= $all_client->getBirthday() ?></td>
-                <td><?= $all_client->getPhone() ?></td>
-                <td><a href="update.php?id=<?= $all_client->getId() ?>">Редактировать</a></td>
-                <td><a href="delete.php?id=<?= $all_client->getId() ?>">Удалить</a></td>
-                <td><a href="view.php?id=<?= $all_client->getId()?>">Просмотреть</a></td>
+                <td><?= $client->getLastName() ?></td>
+                <td><?= $client->getName() ?></td>
+                <td><?= $client->getMiddleName() ?></td>
+                <td><?= $client->getBirthday() ?></td>
+                <td><?= $client->getPhone() ?></td>
+                <td><a href="update.php?id=<?= $client->getId() ?>">Редактировать</a></td>
+                <td><a href="delete.php?id=<?= $client->getId() ?>">Удалить</a></td>
+                <td><a href="view.php?id=<?= $client->getId() ?>">Просмотреть</a></td>
             </tr>
-
-            <?php
-        }
-        ?>
+        <?php } ?>
     </table>
 
 <?php include '../templates/footer.php'; ?>
