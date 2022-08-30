@@ -6,7 +6,7 @@ require_once "../common.php";
 require_once '../src/entity/comment.php';
 
 
-if (isset ($_POST)) {
+if (!empty($_POST)) {
     $entity = new Comment(
         $_POST['body'] ?? "",
         $_POST['client_id'] ?? ""

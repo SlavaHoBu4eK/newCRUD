@@ -56,15 +56,10 @@ class ClientRepository
                     $client->getPhone()
                 ]);
         } catch (PDOException $error) {
-            return false;
-        }
-//        return true;
-    }
 
-    # GET -> $_GET['id']
-    # $e = $r->findOne($id);
-    # $e->setStatus('email_verified')
-    # if($r->update($e)){ echo "Success!" } else { echo "Failed!" }
+        }
+        return false;
+    }
 
 
     public function update(Client $client): bool
@@ -78,7 +73,7 @@ class ClientRepository
                   phone = ?
               WHERE id = ?");
 
-            $statement->execute([
+            return $statement->execute([
                 $client->getLastName(),
                 $client->getName(),
                 $client->getMiddleName(),
@@ -89,9 +84,9 @@ class ClientRepository
 
         } catch (PDOException $error) {
             #ignore
-            return false;
+
         }
-        return true;
+        return false;
     }
 
 

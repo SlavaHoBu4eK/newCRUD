@@ -39,8 +39,8 @@
 
     <?php
     $sn = 1;
-//    $clients = $clientRepository->findAll();
-    foreach ($args as $client) : ?>
+
+    foreach ($clients as $client) : ?>
         <tr>
             <td><?= $sn++ ?>.</td>
             <td><?= $client->getLastName() ?></td>

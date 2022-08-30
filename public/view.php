@@ -5,7 +5,7 @@
  * @var $commentRepository СommentRepository
  */
 require_once "../common.php";
-include '../templates/header.php';
+echo template('header');
 include '../src/entity/comment.php';
 include '../src/entity/client.php';
 
@@ -58,4 +58,4 @@ $comments = $commentRepository->findAll($id);
 </ul>
 </body>
 
-<?php require_once '../templates/footer.php'; ?>
+<?= template('footer');?>

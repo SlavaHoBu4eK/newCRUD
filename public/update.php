@@ -3,7 +3,8 @@
  * @var $clientRepository СlientRepository
  */
 require_once "../common.php";
-include '../templates/header.php';
+echo template('header');
+
 include '../src/entity/client.php';
 
 $id = $_GET['id'] ?? '';
@@ -22,8 +23,8 @@ if (!empty($_POST)) {
     $client->setBirthday($_POST['birthday']);
     $client->setPhone($_POST['phone']);
 
-    $updClient = $clientRepository->update($client);
-    if ($updClient) {
+
+    if ($clientRepository->update($client)) {
         echo 'Изменения данных успешно сохранены';
     } else {
         echo 'Что-то пошло не так, изменения не сохранены';
@@ -61,5 +62,5 @@ if (!empty($_POST)) {
 
     <?php
 }
-require_once '../templates/footer.php';
+echo template('footer');
 

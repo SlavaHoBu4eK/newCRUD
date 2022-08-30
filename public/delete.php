@@ -3,7 +3,7 @@
  * @var $clientRepository СlientRepository
  */
 require_once "../common.php";
-include '../templates/header.php';
+echo template('header');
 
 $id = $_GET['id'];
 
@@ -19,4 +19,4 @@ if (!empty($id)) {
     echo "Request data is required!";
 }
 
-include '../templates/footer.php';
+echo template('footer');

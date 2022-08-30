@@ -3,7 +3,7 @@
  * @var $clientRepository СlientRepository
  */
 require_once "../common.php";
-include '../templates/header.php';
+echo template('header');
 require_once '../src/entity/client.php';
 
 if (isset($_POST['submit'])) {
@@ -34,5 +34,5 @@ if (isset($_POST['submit'])) {
     echo "Request data is required!";
 }
 
-include '../templates/footer.php';
+echo template('footer');
 
