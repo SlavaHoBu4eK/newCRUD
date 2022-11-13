@@ -15,7 +15,7 @@ if (!empty($_POST)) {
     $createComment = $commentRepository->create($entity);
 
     if ($createComment) {
-        header('Location: view.php?id=' . $entity->getClientId());
+        header('Location: view?id=' . $entity->getClientId());
 
     } else {
         echo 'not success';

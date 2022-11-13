@@ -2,6 +2,7 @@
 /**
  * @var $clientRepository СlientRepository
  */
+
 require_once "../common.php";
 echo template('header');
 require_once '../src/entity/client.php';
@@ -25,10 +26,12 @@ if (isset($_POST['submit'])) {
 
     if ($isSaved) { ?>
         <blockquote> Запись для аккаунта успешно создана. Для того, чтоб вернуться
-            на главную страницу, нажмите <a href="index.php">вперед</a>.
+            на главную страницу, нажмите <a href="/">вперед</a>.
         </blockquote>
-    <?php } else {
-        echo "Something went wrong! Please try later.";
+    <?php }
+     else {
+        echo "Something went wrong! Please try again later.";
+
     }
 } else {
     echo "Request data is required!";

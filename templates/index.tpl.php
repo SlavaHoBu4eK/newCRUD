@@ -1,5 +1,5 @@
 <h3>Добавление нового клиента</h3>
-<form action="create.php" method="post">
+<form action="create" method="post">
     <label>Фамилия:</label>
     <label>
         <input type="text" name="last_name" placeholder="Введите фамилию">
@@ -48,9 +48,9 @@
             <td><?= $client->getMiddleName() ?></td>
             <td><?= $client->getBirthday() ?></td>
             <td><?= $client->getPhone() ?></td>
-            <td><a href="update.php?id=<?= $client->getId() ?>">Редактировать</a></td>
-            <td><a href="delete.php?id=<?= $client->getId() ?>">Удалить</a></td>
-            <td><a href="view.php?id=<?= $client->getId() ?>">Просмотреть</a></td>
+            <td><a href="update?id=<?= $client->getId() ?>">Редактировать</a></td>
+            <td><a href="delete?id=<?= $client->getId() ?>">Удалить</a></td>
+            <td><a href="view?id=<?= $client->getId() ?>">Просмотреть</a></td>
         </tr>
     <?php endforeach; ?>
 </table>

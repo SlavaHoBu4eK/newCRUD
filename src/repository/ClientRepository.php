@@ -55,7 +55,9 @@ class ClientRepository
                     $client->getBirthday(),
                     $client->getPhone()
                 ]);
-        } catch (PDOException $error) {
+        } catch (Exception $e) {
+            echo 'Выброшено исключение: ', $e->getMessage(), "\n";
+
 
         }
         return false;

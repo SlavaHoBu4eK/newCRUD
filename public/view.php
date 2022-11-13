@@ -26,7 +26,7 @@ $comments = $commentRepository->findAll($id);
 <h3>Дата рождения: <?= $client->getBirthday() ?></h3>
 <h3>Номер телефона: <?= $client->getPhone() ?></h3>
 <hr>
-<form action="create_comment.php" method="post">
+<form action="create_comment" method="post">
     <input type="hidden" name="client_id" value=" <?php echo $client->getId() ?>">
     <label>
         <textarea name="body"></textarea>
@@ -58,4 +58,4 @@ $comments = $commentRepository->findAll($id);
 </ul>
 </body>
 
-<?= template('footer');?>
+<?= template('footer'); ?>

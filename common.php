@@ -14,17 +14,17 @@ function escape($html)
 }
 
 
-function template(string $file, array $clients = [])
+function template(string $file, array $clients = []): string
 {
-    if (!file_exists('/var/www/html/templates/' . $file . '.tpl.php')) {//проверка существует ли файл
+    if (!file_exists(dirname(getcwd()) . '/templates/' . $file . '.tpl.php')) {//проверка существует ли файл
         return '';
     }
-    if (is_array($clients)){
+    if (is_array($clients)) {
         extract($clients);
     }
-        ob_start(); // откываем буфер обмена
-        require 'templates/' . $file . '.tpl.php';
-        return ob_get_clean(); //очищаем буфер обмена
+    ob_start(); // открываем буфер обмена
+    require 'templates/' . $file . '.tpl.php';
+    return ob_get_clean(); //очищаем буфер обмена
 
 }
 
