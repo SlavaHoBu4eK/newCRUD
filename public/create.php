@@ -1,36 +1,41 @@
 <?php
+/**
+ * @var $clientRepository СlientRepository
+ */
 
 require_once "../common.php";
-
-include '../templates/header.php';
+echo template('header');
+require_once '../src/entity/client.php';
 
 if (isset($_POST['submit'])) {
 
-    $isSaved = false;
+    $entity = new Client(
+        $_POST['last_name'] ?? "",
+        $_POST['name'] ?? "",
+        $_POST['middle_name'] ?? "",
+        $_POST['birthday'] ?? "",
+        $_POST['phone'] ?? ""
+    );
 
-    try {
-        $isSaved = $connection
-            ->prepare("INSERT INTO client ( last_name, name, middle_name, date_of_birth, phone_number) VALUES (?,?,?,?,?)")
-            ->execute([
-                    $_POST['lastname'] ?? "",
-                    $_POST['name'] ?? "",
-                    $_POST['middlename'] ?? "",
-                    $_POST['birthday'] ?? "",
-                    $_POST['phone'] ?? ""
-            ]);
-    } catch (PDOException $error) {
-        echo $error->getMessage();
-    }
+    $isSaved = $clientRepository->create($entity);
+
+
+#$templater->render("templates/create.php", [
+#        'isSaved' => $isSaved
+#])
 
     if ($isSaved) { ?>
         <blockquote> Запись для аккаунта успешно создана. Для того, чтоб вернуться
-            на главную страницу, нажмите <a href="index.php">вперед</a>.
+            на главную страницу, нажмите <a href="/">вперед</a>.
         </blockquote>
-    <?php } else {
-        echo "Something went wrong! Please try later.";
+    <?php }
+     else {
+        echo "Something went wrong! Please try again later.";
+
     }
 } else {
     echo "Request data is required!";
 }
 
-include '../templates/footer.php';
+echo template('footer');
+

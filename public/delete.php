@@ -1,28 +1,22 @@
 <?php
+/**
+ * @var $clientRepository СlientRepository
+ */
 require_once "../common.php";
-include '../templates/header.php';
+echo template('header');
 
 $id = $_GET['id'];
 
 if (!empty($id)) {
 
-    try {
-        $connection
-            ->prepare("UPDATE  client SET deleted_at = :deleted_at WHERE  id = :id ")
-            ->execute([
-                'id' => $id,
-                'deleted_at' => time()
-            ]);
-        ?>
-        <blockquote> Запись была успешно удалена. Для того, чтоб вернуться
-            на главную страницу, нажмите <a href="index.php">вперед</a>.
-        </blockquote>
-    <?php
-    } catch (PDOException $error) {
-        echo "Oops... something went wrong! Please try later. Details: {$error->getMessage()}";
+    if ($clientRepository->delete($id)) {
+        echo 'Данные успешно удалены';
+    } else {
+        echo "Что-то пошло не так, и данные не были удалены";
     }
+
 } else {
     echo "Request data is required!";
 }
 
-include '../templates/footer.php';
+echo template('footer');

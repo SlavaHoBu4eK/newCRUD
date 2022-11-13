@@ -1,44 +1,37 @@
 <?php
 
+/**
+ * @var $clientRepository СlientRepository
+ * @var $commentRepository СommentRepository
+ */
 require_once "../common.php";
-include '../templates/header.php';
+echo template('header');
+include '../src/entity/comment.php';
+include '../src/entity/client.php';
 
 $id = $_GET['id'] ?? '';
 
 if (!empty($id)) {
-
-    try {
-        $sql = $connection->prepare("SELECT * FROM client WHERE id = :client_id AND deleted_at IS NULL");
-        $sql->execute(['client_id' => $id]);
-        $client = $sql->fetch(PDO::FETCH_OBJ);
-    } catch (PDOException $error) {
-        die("Oops... something went wrong! Please try later. Details: {$error->getMessage()}");
-    }
+    $client = $clientRepository->findOne($id);
 }
 
-$comments = [];
-
-if (!empty($client)){
-
-try {
-    $sql = $connection->prepare("SELECT * FROM comments WHERE client_id = :client_id  AND deleted_at IS NULL");
-    $sql->execute(['client_id' => $id]);
-    $comments = $sql->fetchall(PDO::FETCH_OBJ);
-} catch (PDOException $error) {
-}
+if (!empty($client)) {
+$comments = $commentRepository->findAll($id);
 ?>
 
 <body>
-<h3>Фамилия: <?php echo $client->last_name; ?></h3>
-<h3>Имя: <?php echo $client->name ?></h3>
-<h3>Отчество: <?php echo $client->middle_name ?></h3>
-<h3>Дата рождения: <?php echo $client->date_of_birth ?></h3>
-<h3>Номер телефона: <?php echo $client->phone_number ?></h3>
+<h3>Фамилия: <?= $client->getLastName(); ?></h3>
+<h3>Имя: <?= $client->getName() ?></h3>
+<h3>Отчество: <?= $client->getMiddleName() ?></h3>
+<h3>Дата рождения: <?= $client->getBirthday() ?></h3>
+<h3>Номер телефона: <?= $client->getPhone() ?></h3>
 <hr>
-<form action="create_comment.php" method="post">
-    <input type="hidden" name="id" value=" <?php echo $client->id ?>">
-    <textarea name="body"></textarea><br><br>
-    <button type="submit">Добавить комментарий</button>
+<form action="create_comment" method="post">
+    <input type="hidden" name="client_id" value=" <?php echo $client->getId() ?>">
+    <label>
+        <textarea name="body"></textarea>
+    </label><br><br>
+    <button type="submit" name="submit">Добавить комментарий</button>
 </form>
 <hr>
 <h3>Комментарий:</h3>
@@ -46,8 +39,9 @@ try {
     <?php
     if (count($comments) > 0) {
         foreach ($comments as $comment) {
+            //$comment = new Comment($comment->body);
             ?>
-            <li><?php echo $comment->body ?></li>
+            <li><?= $comment->getBody() ?></li>
             <?php
         }
     } else {
@@ -64,4 +58,4 @@ try {
 </ul>
 </body>
 
-<?php require_once '../templates/footer.php'; ?>
+<?= template('footer'); ?>
